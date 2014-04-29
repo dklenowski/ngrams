@@ -6,8 +6,8 @@ public class Config {
 
   public static final String redis_ip = "127.0.0.1";
   public static final int redis_port = 6379;
-	public static final int redistimeout = 1000;
-	public static final String logrealm = "ngrams";
-	public static final Level loglevel = Level.INFO; 
-	
+  public static final int redistimeout = 1000;
+  public static final String logrealm = "ngrams";
+  public static final Level loglevel = Level.INFO; 
+
 }

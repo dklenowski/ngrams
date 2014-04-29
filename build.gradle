@@ -1,0 +1,37 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+sourceCompatibility = 1.7
+version = '1.0'
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Google Ngram Parser'
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+  all*.exclude group: 'javax.mail', module: 'mail'
+  all*.exclude group: 'javax.jms', module: 'jms'
+  all*.exclude group: 'com.sun.jdmk', module: 'jmxtools'
+  all*.exclude group: 'com.sun.jmx', module: 'jmxri'
+}
+
+dependencies {
+    compile group: 'gnu.getopt', name: 'java-getopt', version: '1.0.13'
+    compile group: 'log4j', name: 'log4j', version: '1.2.15'
+    compile group: 'redis.clients', name: 'jedis', version: '2.2.0'
+    testCompile group: 'org.testng', name: 'testng', version: '6.1.1'
+}
+
+task writecp(mustRunAfter: build) << {
+  String scriptname = "setclasspath.sh"
+  println "Writing classpath to " + scriptname
+
+  File f = new File(scriptname)
+  f.setExecutable(true)
+  f.text = "export CLASSPATH=" + sourceSets.main.runtimeClasspath.collect { it.absolutePath }.join(':') + "\n"
+}

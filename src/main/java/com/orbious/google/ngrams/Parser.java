@@ -106,7 +106,7 @@ public class Parser {
 
       try {
         store.put(wd, storetype);
-      } catch ( RedisSetException rse ) {
+      } catch ( RedisException rse ) {
         logger.fatal("failed to add wd " + wd + " as " + wdtype, rse);
         break;
       }

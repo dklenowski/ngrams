@@ -10,29 +10,29 @@ public class RedisSet {
 
   private JedisPool pool;
 
-  private String hostip;
-  private int hostport;
+  private String ip;
+  private int port;
   private String setname;
 
   protected static final Logger logger = Logger.getLogger(Config.logrealm);
 
-  public RedisSet(String hostip, int hostport, String setname) { 
-    this.hostip = hostip;
-    this.hostport = hostport;
+  public RedisSet(String ip, int port, String setname) { 
+    this.ip = ip;
+    this.port = port;
     this.setname = setname;
   }
 
-  public synchronized void connect() throws RedisSetException {
+  public synchronized void connect() throws RedisException {
     if ( pool != null ) return;
 
-    logger.info("connecting to redis on " + hostip + ": " + hostport);
+    logger.info("connecting to redis on " + ip + ": " + port);
 
     JedisPoolConfig config = new JedisPoolConfig();
     config.setTestOnBorrow(true);
-    pool = new JedisPool(config, hostip, hostport, Config.redistimeout);
+    pool = new JedisPool(config, ip, port, Config.redistimeout);
 
     if ( !isConnected() ) 
-      throw new RedisSetException("Failed to connect to redis at " + hostip + ": " +hostport);
+      throw new RedisException("Failed to connect to redis at " + ip + ": " +port);
   }
 
   public boolean isConnected() {
@@ -70,6 +70,6 @@ public class RedisSet {
   }
 
   public synchronized String connectStr() {
-    return hostip + ": " + hostport + " (" + setname + ")";
+    return ip + ": " + port + " (" + setname + ")";
   }
 }

@@ -1,14 +1,14 @@
 package com.orbious.google.ngrams;
 
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.apache.log4j.Logger;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.exceptions.JedisException;
 
 public class RedisSet {
 
-  private JedisPool pool;
+  private static JedisPool pool;
+  private static GenericObjectPoolConfig config;
 
   private String ip;
   private int port;
@@ -27,46 +27,64 @@ public class RedisSet {
 
     logger.info("connecting to redis on " + ip + ": " + port);
 
-    JedisPoolConfig config = new JedisPoolConfig();
+    config = new GenericObjectPoolConfig();
     config.setTestOnBorrow(true);
+    config.setTestOnReturn(true);
+    config.setMaxTotal(10000);
+    config.setMaxIdle(1000);
+    config.setMinIdle(500);
     pool = new JedisPool(config, ip, port, Config.redistimeout);
 
     if ( !isConnected() ) 
       throw new RedisException("Failed to connect to redis at " + ip + ": " +port);
   }
 
-  public boolean isConnected() {
-    Jedis jedis = pool.getResource();
-    boolean connected = jedis.isConnected();
-    pool.returnResource(jedis);
-
+  public synchronized boolean isConnected() {
+    Jedis jedis = null;
+    boolean connected = false;
+    
+    try {
+      jedis = pool.getResource();
+      connected = jedis.isConnected();
+    } finally {
+      if ( jedis != null ) pool.returnResource(jedis);
+    }
+    
     return connected;
   }
 
-  public synchronized void disconnect()  {
-    try {
-      pool.destroy();
-    } catch ( JedisException je ) { 
-      logger.warn("failed to destroy jedis pool");
-    } finally {
-      pool = null;
-    }
-  }
+//  public synchronized void disconnect()  {
+//    try {
+//      pool.destroy();
+//    } catch ( JedisException je ) { 
+//      logger.warn("failed to destroy jedis pool");
+//    } finally {
+//      pool = null;
+//    }
+//  }
 
   public synchronized boolean contains(String key) {
     logger.debug("searching for key " + key);
-    Jedis jedis = pool.getResource();
-    boolean ismember = jedis.sismember(setname, key);
-    pool.returnResource(jedis);
-
-    return ismember;
+    
+    Jedis jedis = null;
+    try {
+      jedis = pool.getResource();
+      return jedis.sismember(setname, key);
+    } finally {
+      if ( jedis != null ) pool.returnResource(jedis);
+    }
   }
 
   public synchronized void put(String key) {
     logger.debug("adding " + key + " to set " + setname);
-    Jedis jedis = pool.getResource();
-    jedis.sadd(setname, key);
-    pool.returnResource(jedis);
+    
+    Jedis jedis = null;
+    try {
+      jedis = pool.getResource();
+      jedis.sadd(setname, key);
+    } finally {
+      if ( jedis != null ) pool.returnResource(jedis);
+    }
   }
 
   public synchronized String connectStr() {

@@ -26,15 +26,6 @@ public class WordStore {
     this.port = port;
   }
   
-  public boolean isAvailable() throws RedisException {
-    RedisSet rs = new RedisSet(ip, port, "test");
-    rs.connect();
-    boolean connected = rs.isConnected();
-    rs.disconnect();
-    
-    return connected;
-  }
-  
   public String connectStr() {
     return ip + ": " + port;
   }

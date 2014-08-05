@@ -12,6 +12,8 @@ public class WordStore {
   private String ip;
   private int port;
   
+  private boolean initialized = false;
+  
   protected static final Logger logger = Logger.getLogger(Config.logrealm);
 
   public WordStore() {
@@ -27,7 +29,7 @@ public class WordStore {
   }
   
   public String connectStr() {
-    return ip + ": " + port;
+    return ip + ":" + port;
   }
   
   public void put(String wd, WordStoreType type) throws RedisException {
@@ -55,10 +57,11 @@ public class WordStore {
   }
 
   private RedisSet store(String typestr) throws RedisException { 
+    logger.info("initializing word store " + typestr);
     RedisSet store = stores.get(typestr);
     if ( store != null ) return store;
     
-    store = new RedisSet(typestr, port, typestr);
+    store = new RedisSet(ip, port, typestr);
     store.connect();
     stores.put(typestr, store);
     
@@ -66,18 +69,32 @@ public class WordStore {
   }
   
   
-  public WordStoreType type(String wd) {
+  public WordStoreType type(String wd) throws RedisException {
+    if ( !initialized ) initAllStores();
+    
     Iterator<String> iter = stores.keySet().iterator();
     String key;
     RedisSet store;
     while ( iter.hasNext() ) {
       key = iter.next();
       store = stores.get(key);
-      if ( store.contains(key) ) 
+      if ( store.contains(wd) ) {
+        if ( logger.isDebugEnabled() ) 
+          logger.debug(wd + " is a " +  key);
         return WordStoreType.fromString(key);
+      }
     }
 
+    if ( logger.isDebugEnabled() )
+      logger.debug("failed to find word " + wd);
     return null;
+  }
+  
+  private void initAllStores() throws RedisException {
+    for ( WordStoreType type : WordStoreType.values() ) 
+      store(WordStoreType.toString(type));
+    
+    initialized = true;
   }
 
 }

@@ -2,8 +2,10 @@ package com.orbious.google.ngrams;
 
 import org.apache.log4j.Level;
 
-public class Config {
+public class NgramConfig {
 
+  private NgramConfig() { }
+  
   public static final String redis_ip = "127.0.0.1";
   public static final int redis_port = 6380;
   public static final int redistimeout = 1000;

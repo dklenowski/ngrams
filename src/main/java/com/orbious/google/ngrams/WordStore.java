@@ -14,18 +14,12 @@ public class WordStore {
   
   private boolean initialized = false;
   
-  protected static final Logger logger = Logger.getLogger(Config.logrealm);
+  protected static final Logger logger = Logger.getLogger(NgramConfig.logrealm);
 
   public WordStore() {
     stores = new HashMap<String, RedisSet>();
-    ip = Config.redis_ip;
-    port = Config.redis_port;
-  }
-
-  public WordStore(String ip, int port) { 
-    this();
-    this.ip = ip;
-    this.port = port;
+    this.ip = NgramConfig.redis_ip;
+    this.port = NgramConfig.redis_port;
   }
   
   public String connectStr() {

@@ -14,7 +14,7 @@ public class RedisSet {
   private int port;
   private String setname;
 
-  protected static final Logger logger = Logger.getLogger(Config.logrealm);
+  protected static final Logger logger = Logger.getLogger(NgramConfig.logrealm);
 
   public RedisSet(String ip, int port, String setname) { 
     this.ip = ip;
@@ -33,7 +33,7 @@ public class RedisSet {
     config.setMaxTotal(10000);
     config.setMaxIdle(1000);
     config.setMinIdle(500);
-    pool = new JedisPool(config, ip, port, Config.redistimeout);
+    pool = new JedisPool(config, ip, port, NgramConfig.redistimeout);
 
     if ( !isConnected() ) 
       throw new RedisException("Failed to connect to redis at " + ip + ": " +port);

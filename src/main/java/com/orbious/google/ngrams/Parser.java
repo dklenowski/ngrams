@@ -24,7 +24,7 @@ public class Parser {
 
   public static void main(String[] args) {
     Utils.setuplogger();
-    logger = Logger.getLogger(Config.logrealm);
+    logger = Logger.getLogger(NgramConfig.logrealm);
 
     String inputname = null;
 

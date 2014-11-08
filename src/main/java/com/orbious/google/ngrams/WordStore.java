@@ -85,8 +85,12 @@ public class WordStore {
   }
   
   private void initAllStores() throws RedisException {
-    for ( WordStoreType type : WordStoreType.values() ) 
-      store(WordStoreType.toString(type));
+    String typestr;
+    for ( WordStoreType type : WordStoreType.values() ) {
+      typestr = WordStoreType.toString(type);
+      logger.info("initializing wordstore " + typestr);
+      store(typestr);
+    }
     
     initialized = true;
   }

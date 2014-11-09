@@ -1,5 +1,11 @@
 package com.orbious.google.ngrams;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Set;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.apache.log4j.Logger;
 import redis.clients.jedis.Jedis;
@@ -87,6 +93,22 @@ public class RedisSet {
     }
   }
 
+  public synchronized void dump(File outputfile) throws IOException {
+    BufferedWriter writer = new BufferedWriter(new FileWriter(outputfile));
+    Jedis jedis = null;
+    try {
+      jedis = pool.getResource();
+      Set<String> set = jedis.smembers(setname);
+      Iterator<String> iter = set.iterator();
+      while ( iter.hasNext() ) 
+        writer.write(iter.next() + "\n");
+    } finally {
+      writer.close();
+      if ( jedis != null ) pool.returnResource(jedis);
+    }
+  }
+  
+  
   public synchronized String connectStr() {
     return ip + ": " + port + " (" + setname + ")";
   }

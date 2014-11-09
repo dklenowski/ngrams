@@ -1,13 +1,13 @@
 package com.orbious.google.ngrams;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
-
 import org.apache.log4j.Logger;
 
 public class WordStore {
 
-  private HashMap<String, RedisSet> stores;
+  private HashMap<WordStoreType, RedisSet> stores;
  
   private String ip;
   private int port;
@@ -17,7 +17,7 @@ public class WordStore {
   protected static final Logger logger = Logger.getLogger(NgramConfig.logrealm);
 
   public WordStore() {
-    stores = new HashMap<String, RedisSet>();
+    stores = new HashMap<WordStoreType, RedisSet>();
     this.ip = NgramConfig.redis_ip;
     this.port = NgramConfig.redis_port;
   }
@@ -34,8 +34,7 @@ public class WordStore {
     }
 
     logger.debug("adding word " + wd +  " to " + typestr);
-    
-    RedisSet store = store(typestr);
+    RedisSet store = store(type);
     store.put(wd);
   }
   
@@ -46,18 +45,19 @@ public class WordStore {
       return false;
     }
    
-    RedisSet store = store(typestr);
+    RedisSet store = store(type);
     return store.contains(wd);
   }
 
-  private RedisSet store(String typestr) throws RedisException { 
+  private RedisSet store(WordStoreType type) throws RedisException { 
+    String typestr = WordStoreType.toString(type);
     logger.info("initializing word store " + typestr);
-    RedisSet store = stores.get(typestr);
+    RedisSet store = stores.get(type);
     if ( store != null ) return store;
     
     store = new RedisSet(ip, port, typestr);
     store.connect();
-    stores.put(typestr, store);
+    stores.put(type, store);
     
     return store;
   }
@@ -65,30 +65,30 @@ public class WordStore {
   
   public WordStoreType type(String wd) throws RedisException {
     if ( !initialized ) initAllStores();
-    
-    Iterator<String> iter = stores.keySet().iterator();
-    String key;
-    RedisSet store;
-    while ( iter.hasNext() ) {
-      key = iter.next();
-      store = stores.get(key);
-      if ( store.contains(wd) ) {
-        if ( logger.isDebugEnabled() ) 
-          logger.debug(wd + " is a " +  key);
-        return WordStoreType.fromString(key);
+
+    for ( WordStoreType type : WordStoreType.values() ) {
+      if ( stores.get(type).contains(wd) ) {
+        if ( logger.isInfoEnabled() ) 
+          logger.info("word " + wd + " is a " + WordStoreType.toString(type));
+        return type;
       }
     }
 
-    if ( logger.isDebugEnabled() )
-      logger.debug("failed to find word " + wd);
+    if ( logger.isInfoEnabled() ) 
+      logger.info("failed to find type for word " + wd);
+    
     return null;
   }
   
   private void initAllStores() throws RedisException {
     for ( WordStoreType type : WordStoreType.values() ) 
-      store(WordStoreType.toString(type));
+      store(type);
     
     initialized = true;
   }
-
+  
+  public void dump(File outputfile, WordStoreType type) throws RedisException, IOException {
+    RedisSet store = store(type);
+    store.dump(outputfile);
+  }
 }

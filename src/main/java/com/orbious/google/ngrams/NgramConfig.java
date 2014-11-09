@@ -10,6 +10,6 @@ public class NgramConfig {
   public static final int redis_port = 6380;
   public static final int redistimeout = 1000;
   public static final String logrealm = "ngrams";
-  public static final Level loglevel = Level.INFO; 
+  public static final Level loglevel = Level.DEBUG; 
 
 }

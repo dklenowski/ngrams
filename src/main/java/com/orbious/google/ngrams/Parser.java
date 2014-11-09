@@ -16,8 +16,8 @@ public class Parser {
 
   private static void usage() {
     System.out.println(
-        "Usage: IndexDumper [-h]\n" +
-            "    -h               Print this help message and exit.\n" +
+        "Usage: Parser [-h]\n" +
+        "    -h               Print this help message and exit.\n" +
         "    -i <inputfile>   The inputfile to process.\n");
     System.exit(1);
   }
@@ -42,7 +42,7 @@ public class Parser {
     }
 
     if ( inputname == null ) {
-      System.err.println("you must specify a inputname?");
+      System.err.println("you must specify a <inputfile>?");
       usage();
     }
 
@@ -113,6 +113,5 @@ public class Parser {
     }
 
     br.close();
-
   }
 }

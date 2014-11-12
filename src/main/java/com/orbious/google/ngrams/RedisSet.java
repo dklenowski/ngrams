@@ -13,8 +13,8 @@ import redis.clients.jedis.JedisPool;
 
 public class RedisSet {
 
-  private static JedisPool pool;
-  private static GenericObjectPoolConfig config;
+  private JedisPool pool;
+  private GenericObjectPoolConfig config;
 
   private String ip;
   private int port;
@@ -40,7 +40,7 @@ public class RedisSet {
     config.setMaxIdle(1000);
     config.setMinIdle(500);
     pool = new JedisPool(config, ip, port, NgramConfig.redistimeout);
-
+    
     if ( !isConnected() ) 
       throw new RedisException("Failed to connect to redis at " + ip + ": " +port);
   }

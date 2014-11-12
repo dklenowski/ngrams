@@ -3,7 +3,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven'
 
 sourceCompatibility = 1.7
-version = '1.8'
+version = '1.9'
 project.group = 'com.orbious'
 
 jar {

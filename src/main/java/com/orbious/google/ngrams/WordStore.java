@@ -22,11 +22,15 @@ public class WordStore {
     this.port = NgramConfig.redis_port;
   }
   
-  public String connectStr() {
+  public synchronized void connect() throws RedisException {
+    initAllStores();
+  }
+  
+  public synchronized String connectStr() {
     return ip + ":" + port;
   }
   
-  public void put(String wd, WordStoreType type) throws RedisException {
+  public synchronized void put(String wd, WordStoreType type) throws RedisException {
     String typestr = WordStoreType.toString(type);
     if ( typestr == null ) {
       logger.fatal("failed to add word " + wd + " invalid type (" + type + ")");
@@ -38,7 +42,7 @@ public class WordStore {
     store.put(wd);
   }
   
-  public boolean is(String wd, WordStoreType type) throws RedisException {
+  public synchronized boolean is(String wd, WordStoreType type) throws RedisException {
     String typestr = WordStoreType.toString(type);
     if ( typestr == null ) {
       logger.fatal("invalid type (" + type + ") searching for " + wd);
@@ -63,7 +67,7 @@ public class WordStore {
   }
   
   
-  public WordStoreType type(String wd) throws RedisException {
+  public synchronized WordStoreType type(String wd) throws RedisException {
     if ( !initialized ) initAllStores();
 
     for ( WordStoreType type : WordStoreType.values() ) {

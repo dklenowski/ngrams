@@ -3,6 +3,7 @@ package com.orbious.google.ngrams;
 import gnu.getopt.Getopt;
 import java.io.File;
 import java.io.IOException;
+import com.orbious.jedisutil.RedisException;
 
 import org.apache.log4j.Logger;
 

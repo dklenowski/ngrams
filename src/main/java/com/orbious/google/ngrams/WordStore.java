@@ -3,7 +3,11 @@ package com.orbious.google.ngrams;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+
 import org.apache.log4j.Logger;
+
+import com.orbious.jedisutil.RedisException;
+import com.orbious.jedisutil.RedisSet;
 
 public class WordStore {
 

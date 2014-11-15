@@ -3,6 +3,7 @@ ngrams
 
 Java API to parse google ngrams http://storage.googleapis.com/books/ngrams/books/datasetsv2.html into redis based on the type of word.
 
+Note, Requires https://github.com/dklenowski/jedisutil
 
 ### To Build
 

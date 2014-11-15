@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-
+import com.orbious.jedisutil.RedisException;
 import gnu.getopt.Getopt;
 
 import org.apache.log4j.Logger;

@@ -59,10 +59,10 @@ public class WordStore {
 
   private RedisSet store(WordStoreType type) throws RedisException { 
     String typestr = WordStoreType.toString(type);
-    logger.info("initializing word store " + typestr);
     RedisSet store = stores.get(type);
     if ( store != null ) return store;
     
+    logger.info("initializing word store " + typestr);
     store = new RedisSet(ip, port, typestr);
     store.connect();
     stores.put(type, store);

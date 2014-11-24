@@ -1,11 +1,11 @@
 package com.orbious.google.ngrams;
 
 public enum WordStoreType {
-  NOUN,
-  VERB,
-  ADJ,
-  ADV,
-  PRON,
+  NOUN, //0 
+  VERB, //1
+  ADJ,  //2
+  ADV,  //3
+  PRON, //4
   DET,
   CONJ,
   ADP,

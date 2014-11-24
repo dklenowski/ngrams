@@ -12,13 +12,19 @@ Note, Requires https://github.com/dklenowski/jedisutil
 
 ### To run
 
-    gradle writecp
-    . ./setclasspath.sh
-    $ java -server -Xmx2048m com.orbious.google.ngrams.Parser
-    you must specify a <inputfile>?
-    Usage: Parser [-h]
-       -h               Print this help message and exit.
-       -i <inputfile>   The inputfile to process.
+- Configure a redis store to run on `127.0.0.1:7000`
+- Generate the `setclasspath.sh` file:
+
+        gradle writecp
+
+- You should now be able to run the parser using:
+
+        $ . ./setclasspath.sh
+        $ java -server -Xmx2048m com.orbious.google.ngrams.Parser
+        you must specify a <inputfile>?
+        Usage: Parser [-h] -i <inputfile>
+           -h               Print this help message and exit.
+           -i <inputfile>   The inputfile to process.
 
 ### To deploy to a local maven repository
 

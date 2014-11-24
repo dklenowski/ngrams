@@ -16,7 +16,7 @@ public class Parser {
 
   private static void usage() {
     System.out.println(
-        "Usage: Parser [-h]\n" +
+        "Usage: Parser [-h] -i <inputfile>\n" +
         "    -h               Print this help message and exit.\n" +
         "    -i <inputfile>   The inputfile to process.\n");
     System.exit(1);

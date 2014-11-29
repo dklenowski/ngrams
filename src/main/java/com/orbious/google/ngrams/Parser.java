@@ -5,8 +5,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+
 import com.orbious.jedisutil.RedisException;
+
 import gnu.getopt.Getopt;
+
 import org.apache.log4j.Logger;
 
 public class Parser {
@@ -63,13 +66,25 @@ public class Parser {
 
     String str;
     ParseResult pr;
+    String prev = null;
+    String[] flds;
+    
     while ( (str = br.readLine()) != null ) {
       if ( str.equals("^$") ) continue;
-    
+
+      // try to "continue" fast !
+      flds = str.trim().split("\\s+");
+      if ( !flds[0].contains("_") ) continue;
+      
+      // there are allot of duplicates in the ngrams ..
+      if ( flds[0].equals(prev) ) continue;
+      
+      prev = flds[0];
       pr = ParseUtils.parse(str);
       if ( pr == null ) continue;
       
       try {
+        logger.info("adding result: " + pr);
         store.put(pr.wd(), pr.type());;
       } catch ( RedisException rse ) {
         logger.fatal("failed to add result: " + pr, rse);

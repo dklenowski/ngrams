@@ -89,19 +89,19 @@ public class Finder {
     String[] flds2;
     String wdtype;
     String wdlower = wd.toLowerCase();
+    String fndwd;
     while ( (str = br.readLine()) != null ) {
       if ( str.equals("^$") ) continue;
-      if ( !str.toLowerCase().contains(wdlower) ) continue;
-      
-      
+
       flds = str.trim().split("\\s+");
       if ( !flds[0].contains("_") ) continue;
 
       flds2 = flds[0].split("_", 2);
-      wd = flds2[0];
+      fndwd = flds2[0];
       wdtype = flds2[1];
       
-      logger.info("Found word " + wd + " as a " + wdtype + " in " + file);
+      if ( fndwd.toLowerCase().equals(wdlower) ) 
+        logger.info("Found word " + fndwd + "(" + wdlower + ") as a " + wdtype + " in " + file);
     }
     
     br.close();

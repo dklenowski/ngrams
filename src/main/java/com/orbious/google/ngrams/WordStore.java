@@ -41,8 +41,10 @@ public class WordStore {
       return;
     }
 
-    logger.debug("adding word " + wd +  " to " + typestr);
     RedisSet store = store(type);
+    if ( store.contains(wd) ) return;
+
+    logger.debug("adding word " + wd +  " to " + typestr);
     store.put(wd);
   }
   
@@ -54,7 +56,10 @@ public class WordStore {
     }
    
     RedisSet store = store(type);
-    return store.contains(wd);
+    if ( NgramConfig.lowercase ) 
+      return store.contains(wd.toLowerCase());
+    else
+      return store.contains(wd);
   }
 
   private RedisSet store(WordStoreType type) throws RedisException { 

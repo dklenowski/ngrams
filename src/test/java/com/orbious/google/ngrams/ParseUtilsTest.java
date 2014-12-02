@@ -46,6 +46,14 @@ public class ParseUtilsTest {
   }
   
   @Test
+  public void lowered() {
+    Assert.assertFalse(ParseUtils.lowered("Caepio"));
+    Assert.assertFalse(ParseUtils.lowered("CAEPIO"));
+    Assert.assertTrue(ParseUtils.lowered("awakeners"));
+    Assert.assertTrue(ParseUtils.lowered("it's"));
+  }
+  
+  @Test
   public void capitalized() {
     Assert.assertFalse(ParseUtils.capitalized("Caepio"));
     Assert.assertFalse(ParseUtils.capitalized("I.B.M"));

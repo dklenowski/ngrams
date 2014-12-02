@@ -28,24 +28,35 @@ public class ParseUtils {
     String wdtype =categories[1];
     
     if ( wd == null ) {
-      logger.warn("failed to extract word from line: " + line);
+      if ( logger.isDebugEnabled() )
+        logger.debug("failed to extract word from line: " + line);
       return null;
     } else if ( wdtype == null ) {
-      logger.warn("failed to extract word-type from line:" + line);
+      if ( logger.isDebugEnabled() )
+        logger.debug("failed to extract word-type from line:" + line);
       return null;
     }
     
-    if ( !validword(wd) ) {
-      logger.info("invalid word (" + wd + ") found on line: " + line);
+    if ( NgramConfig.strict && !lowered(wd) ) {
+      if ( logger.isDebugEnabled() )
+        logger.debug("skipping word (" + wd + ") found on line: " + line);
       return null;
-    } else if ( capitalized(wd) ) {
-      logger.info("all caps word (" + wd + ") found on line: " + line);
-      return null;
+    } else {
+      if ( !validword(wd) ) {
+        if ( logger.isDebugEnabled() )
+          logger.debug("invalid word (" + wd + ") found on line: " + line);
+        return null;
+      } else if ( capitalized(wd) ) {
+        if ( logger.isDebugEnabled() )
+          logger.debug("all caps word (" + wd + ") found on line: " + line);
+        return null;
+      }
     }
     
     WordStoreType storetype = WordStoreType.fromString(wdtype);
     if ( storetype == null ) {
-      logger.warn("unknow type (" + wdtype + ") found on line:" + line);
+      if ( logger.isDebugEnabled() )
+        logger.debug("unknow type (" + wdtype + ") found on line:" + line);
       return null;
     }
     
@@ -62,6 +73,16 @@ public class ParseUtils {
         return false;
     }
 
+    return true;
+  }
+  
+  public static boolean lowered(String wd) {
+    char[] buf = wd.toCharArray();
+    for ( int i = 0; i < buf.length; i++ ) {
+      if ( !Character.isLowerCase(buf[i]) && !punctuation.contains(buf[i]) )
+        return false;
+    }
+    
     return true;
   }
   

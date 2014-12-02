@@ -1,20 +1,17 @@
 package com.orbious.google.ngrams;
 
 public enum WordStoreType {
-  NOUN, //0 
-  VERB, //1
-  ADJ,  //2
-  ADV,  //3
-  PRON, //4
-  DET,
-  CONJ,
-  ADP,
-  NUM,
-  PRT,
-  ROOT,
-  START,
-  END,
-  X;
+  NOUN, //nouns 
+  VERB, //verbs
+  ADJ,  //adjectives
+  ADV,  //adverbs
+  PRON, //pronouns
+  DET,  //determiners and articles 
+  CONJ, //conjunctions
+  ADP,  //prepositions and postpositions
+  NUM,  //numerals
+  PRT,  //particles
+  X;    //catchall
 
   public static String toString(WordStoreType type) {
     switch ( type ) {
@@ -38,12 +35,6 @@ public enum WordStoreType {
       return "num";
     case PRT:
       return "prt";
-    case ROOT:
-      return "root";
-    case START:
-      return "start";
-    case END:
-      return "end";
     case X:
       return "x";
     default:
@@ -73,12 +64,6 @@ public enum WordStoreType {
       return WordStoreType.NUM;
     case "prt":
       return WordStoreType.PRT;
-    case "root":
-      return WordStoreType.ROOT;
-    case "start":
-      return WordStoreType.START;
-    case "end":
-      return WordStoreType.END;
     case "x":
       return WordStoreType.X;
     default:

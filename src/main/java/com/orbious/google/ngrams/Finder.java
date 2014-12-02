@@ -80,30 +80,37 @@ public class Finder {
   }
   
   public static void search(File file, String wd) throws IOException, FileNotFoundException {
-    logger.info("searching file " + file);
-    
+    String wdlower = wd.toLowerCase();
     BufferedReader br = new BufferedReader(new FileReader(file));
+
+    logger.info("searching for " + wd + " in " + file);
     
     String str;
+    ParseResult pr;
+    String prev = null;
     String[] flds;
-    String[] flds2;
-    String wdtype;
-    String wdlower = wd.toLowerCase();
-    String fndwd;
+    
     while ( (str = br.readLine()) != null ) {
       if ( str.equals("^$") ) continue;
 
+      // try to "continue" fast !
       flds = str.trim().split("\\s+");
       if ( !flds[0].contains("_") ) continue;
-
-      flds2 = flds[0].split("_", 2);
-      fndwd = flds2[0];
-      wdtype = flds2[1];
       
-      if ( fndwd.toLowerCase().equals(wdlower) ) 
-        logger.info("Found word " + fndwd + "(" + wdlower + ") as a " + wdtype + " in " + file);
+      // there are allot of duplicates in the ngrams ..
+      if ( flds[0].equals(prev) ) continue;
+      
+      prev = flds[0];
+      pr = ParseUtils.parse(str);
+      if ( pr == null ) continue;
+      
+      if ( wdlower.toLowerCase().equals(pr.wd()) ) {
+        logger.info("found word in line " + str);
+        logger.info(wd + "(" + wdlower + 
+            ") is a " + WordStoreType.toString(pr.type()) + " in " + file);
+      }
     }
-    
+
     br.close();
   }
 }

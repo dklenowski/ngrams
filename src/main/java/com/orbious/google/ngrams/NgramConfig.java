@@ -12,6 +12,7 @@ public class NgramConfig {
   public static final int redistimeout = 1000;
   
   // parse stuff
+  public static boolean strict = true;
   public static boolean lowercase = true;   // convert everything to lowercase
   
   // logging stuff
